@@ -12,7 +12,9 @@
     "lint": "npm run lint:js && npm run lint:prettier",
     "lintfix": "prettier --write --list-different . && npm run lint:js -- --fix",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --coverage"
   },
   "lint-staged": {
     "*.{js,vue}": "eslint --cache",
@@ -42,6 +44,8 @@
     "jest": "^27.4.4",
     "lint-staged": "^12.1.2",
     "prettier": "^2.5.1",
+    "sass": "^1.49.8",
+    "sass-loader": "^10.2.1",
     "vue-jest": "^3.0.4"
   }
 }
