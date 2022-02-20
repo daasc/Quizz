@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <h1>Hello</h1>
-  </div>
+  <div></div>
 </template>
 
 <script>
 export default {
   name: 'IndexPage',
+  async created() {
+    await this.$store.dispatch('quizz/getQuestions')
+  },
 }
 </script>
+<style lang=""></style>
