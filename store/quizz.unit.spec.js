@@ -22,7 +22,9 @@ const getQuestion = () => {
 
 axios.get = jest
   .fn()
-  .mockImplementationOnce(() => Promise.resolve({ data: [getQuestion()] }))
+  .mockImplementationOnce(() =>
+    Promise.resolve({ data: { results: getQuestion() } })
+  )
 
 const storeConfig = {
   state,
@@ -99,7 +101,7 @@ describe('Quizz Store', () => {
     const commit = jest.fn()
     const state = store.state.quizz
     await actions.getQuestions({ commit, state })
-    expect(commit).toHaveBeenCalledWith('SET_QUESTIONS', [getQuestion()])
+    expect(commit).toHaveBeenCalledWith('SET_QUESTIONS', getQuestion())
     expect(axios.get).toHaveBeenCalledWith('https://opentdb.com/api.php', {
       params: state,
     })

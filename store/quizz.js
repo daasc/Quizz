@@ -28,7 +28,7 @@ export const actions = {
         type: state.type,
       },
     })
-    commit('SET_QUESTIONS', result.data)
+    commit('SET_QUESTIONS', result.data.results)
   },
 }
 
