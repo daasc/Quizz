@@ -16,12 +16,14 @@ const storeConfig = {
   actions,
   namespaced: true,
 }
+
 const storeConfigQuizz = {
   state: quizzStore.state,
   actions: quizzStore.actions,
   mutations: quizzStore.mutations,
   namespaced: true,
 }
+
 const localVue = createLocalVue()
 
 localVue.use(Vuex)
@@ -43,28 +45,31 @@ const getCategory = () => {
   ]
 }
 
-axios.get.mockReturnValue(
-  Promise.resolve({
-    data: {
-      trivia_categories: getCategory(),
-    },
-  })
-)
-
 describe('Index', () => {
+  beforeEach(() => {
+    jest.resetModules()
+    jest.clearAllMocks()
+  })
   afterEach(() => {
     jest.clearAllMocks()
   })
+
   const mountIndex = async () => {
     const store = new Vuex.Store({
       modules: {
         category: storeConfig,
+        quizz: storeConfigQuizz,
       },
     })
 
+    store.dispatch = jest.fn()
+    store.commit = jest.fn()
     const wrapper = await mount(index, {
-      localVue,
       store,
+      localVue,
+      mocks: {
+        $axios: axios,
+      },
     })
 
     await Vue.nextTick()
@@ -80,23 +85,18 @@ describe('Index', () => {
     expect(card).toHaveLength(1)
   })
   it('should call getCategory on component mount', async () => {
-    const store = new Vuex.Store({
-      modules: {
-        category: storeConfig,
-      },
-    })
-    store.dispatch = jest.fn()
-
-    await mount(index, {
-      store,
-      localVue,
-      mocks: {
-        $axios: axios,
-      },
-    })
+    const { store } = await mountIndex()
+    axios.get.mockReturnValue(
+      Promise.resolve({
+        data: {
+          trivia_categories: getCategory(),
+        },
+      })
+    )
     await Vue.nextTick()
     const commit = jest.fn()
     await actions.getCategory({ commit })
+
     expect(commit).toHaveBeenCalledWith('SET_CATEGORY', getCategory())
     expect(store.dispatch).toHaveBeenCalledWith('category/getCategory')
     expect(axios.get).toHaveBeenCalledWith(
@@ -104,12 +104,15 @@ describe('Index', () => {
     )
   })
   it('should call getQuizz and save the questions when setQuizz is clicked', async () => {
+    // const { store , wrapper} = await mountIndex()
+
     const store = new Vuex.Store({
       modules: {
         category: storeConfig,
         quizz: storeConfigQuizz,
       },
     })
+
     const wrapper = await mount(index, {
       store,
       localVue,
@@ -117,7 +120,6 @@ describe('Index', () => {
         $axios: axios,
       },
     })
-    await Vue.nextTick()
     store.dispatch = jest.fn()
     store.commit = jest.fn()
     const commit = jest.fn()
@@ -167,6 +169,5 @@ describe('Index', () => {
         type: 'boolean',
       },
     })
-    // expect(axios.get).toHaveBeenCalledWith('https://opentdb.com/api.php')
   })
 })
