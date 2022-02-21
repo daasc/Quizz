@@ -100,7 +100,7 @@ describe('Quizz Store', () => {
     await store.commit('SET_QUIZZ', getQuizz({ number: 10 }))
     const commit = jest.fn()
     const state = store.state.quizz
-    await actions.getQuestions({ commit, state })
+    await actions.getQuestions({ commit, state: { quizz: state } })
     expect(commit).toHaveBeenCalledWith('SET_QUESTIONS', getQuestion())
     expect(axios.get).toHaveBeenCalledWith('https://opentdb.com/api.php', {
       params: state,

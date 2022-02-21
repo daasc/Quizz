@@ -11,7 +11,10 @@ export const state = () => ({
 
 export const mutations = {
   SET_QUIZZ: (state, payload) => {
-    state.quizz = payload
+    state.quizz.amount = payload.amount
+    state.quizz.category = payload.category
+    state.quizz.difficulty = payload.difficulty
+    state.quizz.type = payload.type
   },
   SET_QUESTIONS: (state, payload) => {
     state.questions.push(payload)
@@ -22,10 +25,10 @@ export const actions = {
   async getQuestions({ commit, state }) {
     const result = await axios.get('https://opentdb.com/api.php', {
       params: {
-        amount: state.amount,
-        category: state.category,
-        difficulty: state.difficulty,
-        type: state.type,
+        amount: state.quizz.amount,
+        category: state.quizz.category,
+        difficulty: state.quizz.difficulty,
+        type: state.quizz.type,
       },
     })
     commit('SET_QUESTIONS', result.data.results)

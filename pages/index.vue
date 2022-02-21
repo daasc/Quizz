@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <quizz-card :category="category"></quizz-card>
+    <quizz-card :category="category" @setQuiz="getQuestions"></quizz-card>
   </div>
 </template>
 
@@ -17,8 +17,15 @@ export default {
     try {
       await this.$store.dispatch('category/getCategory')
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log(error)
     }
+  },
+  methods: {
+    async getQuestions({ quiz }) {
+      await this.$store.commit('quizz/SET_QUIZZ', { ...quiz })
+      await this.$store.dispatch('quizz/getQuestions', { quizz: quiz })
+    },
   },
 }
 </script>

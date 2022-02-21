@@ -1,5 +1,5 @@
 <template>
-  <div class="card" @submit="save()">
+  <div class="card" @submit.prevent="save()">
     <h1>Quiz</h1>
     <form action="">
       <fieldset>
