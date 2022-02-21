@@ -5,23 +5,20 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import quizzCard from '../components/quizzCard.vue'
 export default {
   name: 'IndexPage',
   components: { quizzCard },
-  computed: {
-    category: () => {
-      return [
-        {
-          id: 9,
-          name: 'General Knowledge',
-        },
-        {
-          id: 19,
-          name: 'General',
-        },
-      ]
-    },
+  computed: mapState({
+    category: (state) => state.category.category,
+  }),
+  async created() {
+    try {
+      await this.$store.dispatch('category/getCategory')
+    } catch (error) {
+      console.log(error)
+    }
   },
 }
 </script>
