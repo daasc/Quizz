@@ -1,26 +1,30 @@
 <template>
   <div class="container">
-    <quizz-card :category="category"></quizz-card>
+    <quizz-card :category="category" @setQuiz="getQuestions"></quizz-card>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import quizzCard from '../components/quizzCard.vue'
 export default {
   name: 'IndexPage',
   components: { quizzCard },
-  computed: {
-    category: () => {
-      return [
-        {
-          id: 9,
-          name: 'General Knowledge',
-        },
-        {
-          id: 19,
-          name: 'General',
-        },
-      ]
+  computed: mapState({
+    category: (state) => state.category.category,
+  }),
+  async created() {
+    try {
+      await this.$store.dispatch('category/getCategory')
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error)
+    }
+  },
+  methods: {
+    async getQuestions({ quiz }) {
+      await this.$store.commit('quizz/SET_QUIZZ', { ...quiz })
+      await this.$store.dispatch('quizz/getQuestions', { quizz: quiz })
     },
   },
 }

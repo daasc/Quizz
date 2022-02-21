@@ -24,7 +24,12 @@ const mountQuiz = () => {
 describe('quizzCard', () => {
   it('should mount the component', async () => {
     const { wrapper } = await mountQuiz()
+    expect(wrapper.props().category).toHaveLength(2)
     expect(wrapper.vm).toBeDefined()
+  })
+  it('should default props', async () => {
+    const wrapper = await mount(quizzCard)
+    expect(wrapper.props().category).toHaveLength(0)
   })
 
   it('should contain four selects', async () => {
