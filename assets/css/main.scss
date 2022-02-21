@@ -1,5 +1,30 @@
 body {
+  font-family: 'Lato', sans-serif;
   background: linear-gradient(
+    90deg,
+    rgba(97, 195, 180, 1) 28%,
+    rgba(97, 195, 172, 1) 49%,
+    rgba(41, 156, 210, 0.9962359943977591) 64%
+  );
+}
+fieldset {
+  border: none;
+}
+.input {
+  width: 100%;
+  height: 50px;
+  border-radius: 5px;
+  box-shadow: none;
+  border: 1px solid #ced6e0;
+  transition: all 0.3s ease-in-out;
+  font-size: 18px;
+  padding: 5px 15px;
+  background: none;
+  color: #1a3b5d;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+.input:focus {
+  border-color: linear-gradient(
     90deg,
     rgba(97, 195, 180, 1) 28%,
     rgba(97, 195, 172, 1) 49%,
