@@ -1,18 +1,31 @@
 <template>
   <div class="container">
-    <quizz-card :category="category" @setQuiz="getQuestions"></quizz-card>
+    <quizz-card
+      v-if="!show.length"
+      :category="category"
+      @setQuiz="getQuestions"
+    ></quizz-card>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import quizzCard from '../components/quizzCard.vue'
 export default {
   name: 'IndexPage',
   components: { quizzCard },
-  computed: mapState({
-    category: (state) => state.category.category,
-  }),
+  data() {
+    return {
+      showQuiz: false,
+    }
+  },
+  computed: {
+    category() {
+      return this.$store.state.category.category
+    },
+    show() {
+      return this.$store.state.quizz.questions
+    },
+  },
   async created() {
     await this.$store.dispatch('category/getCategory')
   },

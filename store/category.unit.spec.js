@@ -9,7 +9,9 @@ const storeConfig = {
   mutations,
 }
 
-jest.mock('axios')
+jest.mock('axios', () => ({
+  get: jest.fn(),
+}))
 
 const getCategory = () => {
   return [

@@ -31,6 +31,7 @@ export const actions = {
         type: state.quizz.type,
       },
     })
+    console.log(state)
     commit('SET_QUESTIONS', result.data.results)
   },
 }
