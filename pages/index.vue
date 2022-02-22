@@ -14,12 +14,7 @@ export default {
     category: (state) => state.category.category,
   }),
   async created() {
-    try {
-      await this.$store.dispatch('category/getCategory')
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error)
-    }
+    await this.$store.dispatch('category/getCategory')
   },
   methods: {
     async getQuestions({ quiz }) {

@@ -81,7 +81,7 @@ describe('Quizz Store', () => {
   it('should add data in questions when SET_QUESTIONS is called', async () => {
     const { store } = createStore()
     await store.commit('SET_QUESTIONS', getQuestion())
-    expect(store.state.questions).toEqual([getQuestion()])
+    expect(store.state.questions).toEqual(getQuestion())
   })
 
   it('should add data in quizz when SET_QUIZZ is called', async () => {

@@ -135,6 +135,7 @@ export default {
       .btn {
         align-items: center;
         appearance: none;
+        width: 95%;
         background-color: #fcfcfd;
         border-radius: 4px;
         border-width: 0;
