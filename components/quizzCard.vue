@@ -88,7 +88,18 @@ export default {
   },
   methods: {
     save() {
-      this.$emit('setQuiz', { quiz: this.quiz })
+      if (this.isValid()) {
+        this.$emit('setQuiz', { quiz: this.quiz })
+      }
+    },
+    isValid() {
+      for (const key in this.quiz) {
+        const element = this.quiz[key]
+        if (element) {
+          return true
+        }
+      }
+      return false
     },
   },
 }

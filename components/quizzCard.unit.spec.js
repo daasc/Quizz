@@ -87,4 +87,9 @@ describe('quizzCard', () => {
       },
     ])
   })
+  it('should validate if it contains any selected field', async () => {
+    const { wrapper } = await mountQuiz()
+    await wrapper.find('form').trigger('submit')
+    expect(wrapper.emitted().setQuiz).not.toBeTruthy()
+  })
 })

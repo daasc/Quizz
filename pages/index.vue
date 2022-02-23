@@ -44,6 +44,9 @@ export default {
       await this.$store.dispatch('quizz/getQuestions')
       if (!this.$store.state.quizz.questions.length) {
         this.alert = true
+        setTimeout(() => {
+          this.alert = false
+        }, 5000)
       }
     },
     async getCategory() {

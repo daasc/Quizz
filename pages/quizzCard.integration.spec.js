@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { mount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import axios from 'axios'
@@ -32,9 +33,12 @@ const getQuestion = () => {
 describe('Index', () => {
   let storeMonudels
   afterEach(() => {
+    jest.useFakeTimers()
+
     jest.clearAllMocks()
   })
   beforeEach(() => {
+    jest.useFakeTimers()
     storeMonudels = new Vuex.Store({
       modules: {
         quizz: {
