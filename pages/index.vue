@@ -27,12 +27,15 @@ export default {
     },
   },
   async created() {
-    await this.$store.dispatch('category/getCategory')
+    await this.getCategory()
   },
   methods: {
     async getQuestions({ quiz }) {
       await this.$store.commit('quizz/SET_QUIZZ', { ...quiz })
-      await this.$store.dispatch('quizz/getQuestions', { quizz: quiz })
+      await this.$store.dispatch('quizz/getQuestions')
+    },
+    async getCategory() {
+      await this.$store.dispatch('category/getCategory')
     },
   },
 }
