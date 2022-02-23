@@ -1,146 +1,154 @@
+/* eslint-disable import/no-named-as-default-member */
 import { mount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
-import Vue from 'vue'
 import axios from 'axios'
-import index from '@/pages/index.vue'
-import quizCard from '@/components/quizzCard'
-// eslint-disable-next-line import/no-named-default
-import * as quizzStore from '@/store/quizz.js'
-
-import { actions, getters, mutations, state } from '@/store/category.js'
-
-const storeConfig = {
-  state,
-  getters,
-  mutations,
-  actions,
-  namespaced: true,
-}
-
-const storeConfigQuizz = {
-  state: quizzStore.state,
-  actions: quizzStore.actions,
-  mutations: quizzStore.mutations,
-  namespaced: true,
-}
+import Vue from 'vue'
+import index from '@/pages/index'
+import * as category from '@/store/category.js'
+import * as quizz from '@/store/quizz.js'
+import quizzCard from '@/components/quizzCard'
+import alertCard from '@/components/alertCard'
 
 const localVue = createLocalVue()
-
 localVue.use(Vuex)
+jest.mock('axios')
 
-jest.mock('axios', () => ({
-  get: jest.fn(),
-}))
-
-const getCategory = () => {
+const getQuestion = () => {
   return [
     {
-      id: 9,
-      name: 'General Knowledge',
-    },
-    {
-      id: 19,
-      name: 'General',
+      category: 'Entertainment: Video Games',
+      type: 'multiple',
+      difficulty: 'medium',
+      question: 'What is the punishment for playing Postal 2 in New Zealand?',
+      correct_answer: ' $50,000',
+      incorrect_answers: [
+        'Fine of $5,000',
+        'Nothing',
+        '15 years in prison and a fine of $10,000',
+      ],
     },
   ]
 }
 
 describe('Index', () => {
-  beforeEach(() => {
-    jest.resetModules()
-    jest.clearAllMocks()
-  })
+  let storeMonudels
   afterEach(() => {
+    jest.useFakeTimers()
+
     jest.clearAllMocks()
   })
-
-  const mountIndex = async () => {
-    const store = new Vuex.Store({
+  beforeEach(() => {
+    jest.useFakeTimers()
+    storeMonudels = new Vuex.Store({
       modules: {
-        category: storeConfig,
-        quizz: storeConfigQuizz,
+        quizz: {
+          actions: quizz.actions,
+          state: quizz.state,
+          mutations: quizz.mutations,
+          namespaced: true,
+        },
+        category: {
+          actions: category.actions,
+          state: {
+            category: [{ id: 2, name: 'paulo' }],
+          },
+          mutations: category.mutations,
+          namespaced: true,
+        },
       },
     })
+  })
+  const createMount = async ({ getError = false, store }) => {
+    const commit = jest.fn()
+    if (getError) {
+      axios.get.mockReturnValue(
+        Promise.resolve({
+          data: {
+            results: [],
+            trivia_categories: [{ id: 2, name: 'paulo' }],
+          },
+        })
+      )
+    } else {
+      axios.get.mockReturnValue(
+        Promise.resolve({
+          data: {
+            results: getQuestion(),
+            trivia_categories: [{ id: 2, name: 'paulo' }],
+          },
+        })
+      )
+    }
 
-    store.dispatch = jest.fn()
-    store.commit = jest.fn()
-    const wrapper = await mount(index, {
-      store,
-      localVue,
+    await category.actions.getCategory({ commit })
+
+    const wrapper = mount(index, {
       mocks: {
-        $axios: axios,
+        $store: store,
+        $axios: jest.fn(),
+      },
+      localVue,
+      data() {
+        return {
+          alert: jest.fn(),
+        }
       },
     })
+    await wrapper.vm.$nextTick()
 
     await Vue.nextTick()
-    return { store, wrapper }
+    return { wrapper, store, commit }
   }
+
   it('should mount the component', async () => {
-    const { wrapper } = await mountIndex()
+    const { wrapper } = await createMount({ store: storeMonudels })
     expect(wrapper.vm).toBeDefined()
   })
   it('should mount the quizCard component  as a child', async () => {
-    const { wrapper } = await mountIndex()
-    const card = wrapper.findAllComponents(quizCard)
+    const { wrapper } = await createMount({ store: storeMonudels })
+    const card = wrapper.findAllComponents(quizzCard)
     expect(card).toHaveLength(1)
   })
-  it('should call getCategory on component mount', async () => {
-    const { store } = await mountIndex()
-    axios.get.mockReturnValue(
-      Promise.resolve({
-        data: {
-          trivia_categories: getCategory(),
-        },
-      })
-    )
-    await Vue.nextTick()
-    const commit = jest.fn()
-    await actions.getCategory({ commit })
 
-    expect(commit).toHaveBeenCalledWith('SET_CATEGORY', getCategory())
-    expect(store.dispatch).toHaveBeenCalledWith('category/getCategory')
+  it('should call getCategory on component mount', async () => {
+    const { commit } = await createMount({
+      categorys: true,
+      store: storeMonudels,
+    })
+    expect(commit).toHaveBeenCalledWith('SET_CATEGORY', [
+      { id: 2, name: 'paulo' },
+    ])
     expect(axios.get).toHaveBeenCalledWith(
       'https://opentdb.com/api_category.php'
     )
   })
-  it('should call getQuizz and save the questions when setQuizz is clicked', async () => {
-    // const { store , wrapper} = await mountIndex()
+  it('should call getQuizz and save the questions when setQuizz is clicked ', async () => {
+    const { wrapper } = await createMount({ store: storeMonudels })
 
-    const store = new Vuex.Store({
-      modules: {
-        category: storeConfig,
-        quizz: storeConfigQuizz,
-      },
-    })
-
-    const wrapper = await mount(index, {
-      store,
-      localVue,
-      mocks: {
-        $axios: axios,
-      },
-    })
-    store.dispatch = jest.fn()
-    store.commit = jest.fn()
-    const commit = jest.fn()
-    await quizzStore.actions.getQuestions({
-      commit,
-      state: {
-        quizz: {
-          amount: '15',
-          category: 19,
-          difficulty: 'medium',
-          type: 'boolean',
-        },
-      },
-    })
     await wrapper
-      .find('[data-testid="category-select"]')
+      .find('[data-testid="input-amount"]')
+      .findAll('option')
+      .at(1)
+      .setSelected()
+
+    await wrapper.find('form').trigger('submit')
+    await Vue.nextTick()
+    expect(wrapper.find('form').exists()).toBe(false)
+  })
+
+  it('should show an alert when no question is returned when setQuizz is clicked', async () => {
+    const { wrapper, store } = await createMount({
+      store: storeMonudels,
+      getError: true,
+    })
+
+    await wrapper
+      .find('[data-testid="input-difficulty"]')
       .findAll('option')
       .at(1)
       .setSelected()
     await wrapper
-      .find('[data-testid="input-amount"]')
+      .find('[data-testid="category-select"]')
       .findAll('option')
       .at(1)
       .setSelected()
@@ -149,25 +157,12 @@ describe('Index', () => {
       .findAll('option')
       .at(1)
       .setSelected()
-    await wrapper
-      .find('[data-testid="input-difficulty"]')
-      .findAll('option')
-      .at(1)
-      .setSelected()
     await wrapper.find('form').trigger('submit')
-    expect(store.commit).toHaveBeenCalledWith('quizz/SET_QUIZZ', {
-      amount: '15',
-      category: 19,
-      difficulty: 'medium',
-      type: 'boolean',
-    })
-    expect(store.dispatch).toHaveBeenCalledWith('quizz/getQuestions', {
-      quizz: {
-        amount: '15',
-        category: 19,
-        difficulty: 'medium',
-        type: 'boolean',
-      },
-    })
+    await Vue.nextTick()
+    expect(wrapper.find('form').exists()).toBe(true)
+    expect(store.state.quizz.questions).toEqual([])
+    const alert = await wrapper.findComponent(alertCard)
+    expect(alert.classes()).toContain('error-msg')
+    expect(alert.text()).toContain('no question found as requested')
   })
 })

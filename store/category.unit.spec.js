@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import axios from 'axios'
@@ -9,7 +10,9 @@ const storeConfig = {
   mutations,
 }
 
-jest.mock('axios')
+jest.mock('axios', () => ({
+  get: jest.fn(),
+}))
 
 const getCategory = () => {
   return [

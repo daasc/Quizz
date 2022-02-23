@@ -17,7 +17,7 @@ export const mutations = {
     state.quizz.type = payload.type
   },
   SET_QUESTIONS: (state, payload) => {
-    state.questions.push(payload)
+    state.questions = payload
   },
 }
 
