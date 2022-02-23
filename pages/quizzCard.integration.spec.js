@@ -84,7 +84,11 @@ describe('Index', () => {
         $axios: jest.fn(),
       },
       localVue,
-      methods: {},
+      data() {
+        return {
+          alert: jest.fn(),
+        }
+      },
     })
     await wrapper.vm.$nextTick()
 
@@ -128,7 +132,7 @@ describe('Index', () => {
     expect(wrapper.find('form').exists()).toBe(false)
   })
 
-  fit('should show an alert when no question is returned when setQuizz is clicked', async () => {
+  it('should show an alert when no question is returned when setQuizz is clicked', async () => {
     const { wrapper, store } = await createMount({
       store: storeMonudels,
       getError: true,
@@ -153,9 +157,8 @@ describe('Index', () => {
     await Vue.nextTick()
     expect(wrapper.find('form').exists()).toBe(true)
     expect(store.state.quizz.questions).toEqual([])
-    const card = await wrapper.findComponent(alertCard)
-    card.setProps({ success: true, msg: 'no question found as requested' })
-    expect(card).toHaveLength(1)
-    expect(card.text()).toContain('no question found as requested')
+    const alert = await wrapper.findComponent(alertCard)
+    expect(alert.classes()).toContain('error-msg')
+    expect(alert.text()).toContain('no question found as requested')
   })
 })

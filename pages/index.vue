@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import AlertCard from '../components/alertCard.vue'
-import quizzCard from '../components/quizzCard.vue'
+import AlertCard from '@/components/alertCard.vue'
+import quizzCard from '@/components/quizzCard.vue'
 export default {
   name: 'IndexPage',
   components: { quizzCard, AlertCard },
@@ -24,7 +24,7 @@ export default {
     return {
       showQuiz: false,
       alert: false,
-      msg: '',
+      msg: 'no question found as requested',
     }
   },
   computed: {

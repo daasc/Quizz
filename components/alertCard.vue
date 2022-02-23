@@ -6,10 +6,7 @@
   >
     <div class="msg__content">
       <span data-testid="msg">{{ msg }}</span>
-      <img src="../assets/image/checked.svg" alt="" />
-    </div>
-    <div class="msg__progress">
-      <div class="progress__bar"></div>
+      <img src="../assets/image/error.svg" alt="" />
     </div>
   </div>
 </template>
@@ -31,7 +28,7 @@ export default {
 <style lang="scss">
 .msg {
   position: absolute;
-  min-width: 250px;
+  min-width: 300px;
   height: 35px;
   color: white;
   top: 70px;
@@ -47,24 +44,15 @@ export default {
     align-items: center;
     justify-content: space-around;
   }
-  .msg__progress {
-    width: 97%;
-    height: 5px;
-    border: 1px solid #155e23;
-    border-radius: 8px;
-    .progress__bar {
-      background-color: #155e23;
-      width: 0%;
-      height: 5px;
-      animation: fill-bar 3s infinite;
-    }
-  }
 }
 .error-msg {
-  background-color: red;
+  background-color: var(--color-red);
 }
 .success-msg {
-  background-color: green;
+  background-color: var(--color-green);
+}
+.error-border {
+  border-color: var();
 }
 @keyframes fill-bar {
   from {
