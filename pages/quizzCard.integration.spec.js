@@ -6,6 +6,8 @@ import index from '@/pages/index'
 import * as category from '@/store/category.js'
 import * as quizz from '@/store/quizz.js'
 import quizzCard from '@/components/quizzCard'
+import alertCard from '@/components/alertCard'
+
 const localVue = createLocalVue()
 localVue.use(Vuex)
 jest.mock('axios')
@@ -52,16 +54,27 @@ describe('Index', () => {
       },
     })
   })
-  const createMount = async ({ categorys = false, store }) => {
+  const createMount = async ({ getError = false, store }) => {
     const commit = jest.fn()
-    axios.get.mockReturnValue(
-      Promise.resolve({
-        data: {
-          results: getQuestion(),
-          trivia_categories: [{ id: 2, name: 'paulo' }],
-        },
-      })
-    )
+    if (getError) {
+      axios.get.mockReturnValue(
+        Promise.resolve({
+          data: {
+            results: [],
+            trivia_categories: [{ id: 2, name: 'paulo' }],
+          },
+        })
+      )
+    } else {
+      axios.get.mockReturnValue(
+        Promise.resolve({
+          data: {
+            results: getQuestion(),
+            trivia_categories: [{ id: 2, name: 'paulo' }],
+          },
+        })
+      )
+    }
 
     await category.actions.getCategory({ commit })
 
@@ -113,5 +126,36 @@ describe('Index', () => {
     await wrapper.find('form').trigger('submit')
     await Vue.nextTick()
     expect(wrapper.find('form').exists()).toBe(false)
+  })
+
+  fit('should show an alert when no question is returned when setQuizz is clicked', async () => {
+    const { wrapper, store } = await createMount({
+      store: storeMonudels,
+      getError: true,
+    })
+
+    await wrapper
+      .find('[data-testid="input-difficulty"]')
+      .findAll('option')
+      .at(1)
+      .setSelected()
+    await wrapper
+      .find('[data-testid="category-select"]')
+      .findAll('option')
+      .at(1)
+      .setSelected()
+    await wrapper
+      .find('[data-testid="input-type"]')
+      .findAll('option')
+      .at(1)
+      .setSelected()
+    await wrapper.find('form').trigger('submit')
+    await Vue.nextTick()
+    expect(wrapper.find('form').exists()).toBe(true)
+    expect(store.state.quizz.questions).toEqual([])
+    const card = await wrapper.findComponent(alertCard)
+    card.setProps({ success: true, msg: 'no question found as requested' })
+    expect(card).toHaveLength(1)
+    expect(card.text()).toContain('no question found as requested')
   })
 })
