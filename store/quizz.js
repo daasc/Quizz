@@ -7,6 +7,7 @@ export const state = () => ({
     type: '',
   },
   questions: [],
+  answers: [],
 })
 
 export const mutations = {
@@ -18,6 +19,12 @@ export const mutations = {
   },
   SET_QUESTIONS: (state, payload) => {
     state.questions = payload
+  },
+  SET_ANSWERS: (state, payload) => {
+    state.answers = payload
+  },
+  NEXT: (state) => {
+    state.questions.shift()
   },
 }
 
@@ -35,4 +42,8 @@ export const actions = {
   },
 }
 
-export const getters = {}
+export const getters = {
+  question: (state) => {
+    return state.questions[0]
+  },
+}

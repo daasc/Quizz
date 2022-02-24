@@ -20,6 +20,32 @@ const getQuestion = () => {
   }
 }
 
+const getQuestions = () => {
+  return [
+    getQuestion(),
+    {
+      category: 'History',
+      correct_answer: 'Leif Erikson',
+      difficulty: 'medium',
+      incorrect_answers: [
+        'Christopher Columbus',
+        'Amerigo Vespucci',
+        'Ferdinand Magellan',
+      ],
+      question: 'Who was the first explorer to sail to North America?',
+      type: 'multiple',
+    },
+  ]
+}
+
+const getAnswers = () => {
+  return [
+    {
+      question: 'What is the punishment for playing Postal 2 in New Zealand?',
+      answer: '10 years in prison and a fine of $50,000',
+    },
+  ]
+}
 axios.get = jest
   .fn()
   .mockImplementationOnce(() =>
@@ -77,13 +103,33 @@ describe('Quizz Store', () => {
     const { store } = await createStore()
     expect(store.state.questions).toEqual([])
   })
-
+  it('should return the value of the answers', async () => {
+    const { store } = await createStore()
+    expect(store.state.answers).toEqual([])
+  })
+  it('should return the first in the list ', async () => {
+    const { store } = await createStore()
+    await store.commit('SET_QUESTIONS', getQuestions())
+    expect(store.getters.question).toEqual(getQuestion())
+  })
   it('should add data in questions when SET_QUESTIONS is called', async () => {
     const { store } = createStore()
     await store.commit('SET_QUESTIONS', getQuestion())
     expect(store.state.questions).toEqual(getQuestion())
   })
 
+  it('should add data in answers when SET_ANSWERS is called', async () => {
+    const { store } = createStore()
+    await store.commit('SET_ANSWERS', getAnswers())
+    expect(store.state.answers).toEqual(getAnswers())
+  })
+  it('should remove the first question from the list and save the rest when next is called', async () => {
+    const { store } = createStore()
+    await store.commit('SET_QUESTIONS', getQuestions())
+    await store.commit('NEXT')
+    expect(store.state.questions).toHaveLength(1)
+    expect(store.state.questions[0].category).toContain('History')
+  })
   it('should add data in quizz when SET_QUIZZ is called', async () => {
     const { store } = createStore()
     await store.commit(
