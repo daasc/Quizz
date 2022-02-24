@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import quizzCard from '@/components/quizzCard'
+import quizCard from '@/components/quizCard'
 const getCategory = () => {
   return [
     {
@@ -13,7 +13,7 @@ const getCategory = () => {
   ]
 }
 const mountQuiz = () => {
-  const wrapper = mount(quizzCard, {
+  const wrapper = mount(quizCard, {
     propsData: {
       category: getCategory(),
     },
@@ -21,14 +21,14 @@ const mountQuiz = () => {
 
   return { wrapper }
 }
-describe('quizzCard', () => {
+describe('quizCard', () => {
   it('should mount the component', async () => {
     const { wrapper } = await mountQuiz()
     expect(wrapper.props().category).toHaveLength(2)
     expect(wrapper.vm).toBeDefined()
   })
   it('should default props', async () => {
-    const wrapper = await mount(quizzCard)
+    const wrapper = await mount(quizCard)
     expect(wrapper.props().category).toHaveLength(0)
   })
 
