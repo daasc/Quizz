@@ -106,17 +106,6 @@ export default {
 </script>
 <style lang="scss">
 .card {
-  margin-top: 20px;
-  height: 100%;
-  width: 100%;
-  max-width: 468px;
-  max-height: 600px;
-  overflow-y: auto;
-  background: #fff;
-  border-radius: 0.7rem;
-  box-shadow: 1px 1px 15px 2px rgb(0 0 0 / 16%);
-  padding: 2rem;
-
   h1 {
     text-align: center;
     margin: 0;

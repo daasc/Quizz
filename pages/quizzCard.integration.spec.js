@@ -12,7 +12,7 @@ import alertCard from '@/components/alertCard'
 const localVue = createLocalVue()
 localVue.use(Vuex)
 jest.mock('axios')
-
+let data
 const getQuestion = () => {
   return [
     {
@@ -33,11 +33,13 @@ const getQuestion = () => {
 describe('Index', () => {
   let storeMonudels
   afterEach(() => {
-    jest.useFakeTimers()
-
     jest.clearAllMocks()
+    jest.clearAllTimers()
   })
   beforeEach(() => {
+    data = {
+      alert: jest.fn(),
+    }
     jest.useFakeTimers()
     storeMonudels = new Vuex.Store({
       modules: {
@@ -89,9 +91,7 @@ describe('Index', () => {
       },
       localVue,
       data() {
-        return {
-          alert: jest.fn(),
-        }
+        return data
       },
     })
     await wrapper.vm.$nextTick()
