@@ -1,7 +1,7 @@
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import axios from 'axios'
-import { actions, getters, mutations, state } from '@/store/quizz.js'
+import { actions, getters, mutations, state } from '@/store/quiz.js'
 
 jest.mock('axios')
 
@@ -58,7 +58,7 @@ const storeConfig = {
   mutations,
 }
 
-describe('Quizz Store', () => {
+describe('Quiz Store', () => {
   const createStore = () => {
     const localVue = createLocalVue()
     localVue.use(Vuex)
@@ -81,7 +81,7 @@ describe('Quizz Store', () => {
       ],
     }
   }
-  const getQuizz = ({
+  const getQuiz = ({
     number = 0,
     category = '',
     difficulty = '',
@@ -96,7 +96,7 @@ describe('Quizz Store', () => {
   }
   it('should return the value of the quiz', async () => {
     const { store } = await createStore()
-    expect(store.state.quizz).toEqual(getQuizz({}))
+    expect(store.state.quiz).toEqual(getQuiz({}))
   })
 
   it('should return the value of the questions', async () => {
@@ -130,23 +130,23 @@ describe('Quizz Store', () => {
     expect(store.state.questions).toHaveLength(1)
     expect(store.state.questions[0].category).toContain('History')
   })
-  it('should add data in quizz when SET_QUIZZ is called', async () => {
+  it('should add data in quiz when SET_QUIZ is called', async () => {
     const { store } = createStore()
     await store.commit(
-      'SET_QUIZZ',
-      getQuizz({ number: 10, category: '9', difficulty: 'easy', type: 'multi' })
+      'SET_QUIZ',
+      getQuiz({ number: 10, category: '9', difficulty: 'easy', type: 'multi' })
     )
-    expect(store.state.quizz).toEqual(
-      getQuizz({ number: 10, category: '9', difficulty: 'easy', type: 'multi' })
+    expect(store.state.quiz).toEqual(
+      getQuiz({ number: 10, category: '9', difficulty: 'easy', type: 'multi' })
     )
   })
 
   it('should return the questions when getQuestion is called', async () => {
     const { store } = createStore()
-    await store.commit('SET_QUIZZ', getQuizz({ number: 10 }))
+    await store.commit('SET_QUIZ', getQuiz({ number: 10 }))
     const commit = jest.fn()
-    const state = store.state.quizz
-    await actions.getQuestions({ commit, state: { quizz: state } })
+    const state = store.state.quiz
+    await actions.getQuestions({ commit, state: { quiz: state } })
     expect(commit).toHaveBeenCalledWith('SET_QUESTIONS', getQuestion())
     expect(axios.get).toHaveBeenCalledWith('https://opentdb.com/api.php', {
       params: state,

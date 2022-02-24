@@ -5,8 +5,8 @@ import axios from 'axios'
 import Vue from 'vue'
 import index from '@/pages/index'
 import * as category from '@/store/category.js'
-import * as quizz from '@/store/quizz.js'
-import quizzCard from '@/components/quizzCard'
+import * as quiz from '@/store/quiz.js'
+import quizCard from '@/components/quizCard'
 import alertCard from '@/components/alertCard'
 
 const localVue = createLocalVue()
@@ -43,10 +43,10 @@ describe('Index', () => {
     jest.useFakeTimers()
     storeMonudels = new Vuex.Store({
       modules: {
-        quizz: {
-          actions: quizz.actions,
-          state: quizz.state,
-          mutations: quizz.mutations,
+        quiz: {
+          actions: quiz.actions,
+          state: quiz.state,
+          mutations: quiz.mutations,
           namespaced: true,
         },
         category: {
@@ -106,7 +106,7 @@ describe('Index', () => {
   })
   it('should mount the quizCard component  as a child', async () => {
     const { wrapper } = await createMount({ store: storeMonudels })
-    const card = wrapper.findAllComponents(quizzCard)
+    const card = wrapper.findAllComponents(quizCard)
     expect(card).toHaveLength(1)
   })
 
@@ -160,7 +160,7 @@ describe('Index', () => {
     await wrapper.find('form').trigger('submit')
     await Vue.nextTick()
     expect(wrapper.find('form').exists()).toBe(true)
-    expect(store.state.quizz.questions).toEqual([])
+    expect(store.state.quiz.questions).toEqual([])
     const alert = await wrapper.findComponent(alertCard)
     expect(alert.classes()).toContain('error-msg')
     expect(alert.text()).toContain('no question found as requested')

@@ -6,20 +6,20 @@
       :success="!alert"
       :msg="msg"
     ></alert-card>
-    <quizz-card
+    <quiz-card
       v-if="!show.length"
       :category="category"
       @setQuiz="getQuestions"
-    ></quizz-card>
+    ></quiz-card>
   </div>
 </template>
 
 <script>
 import AlertCard from '@/components/alertCard.vue'
-import quizzCard from '@/components/quizzCard.vue'
+import quizCard from '@/components/quizCard.vue'
 export default {
   name: 'IndexPage',
-  components: { quizzCard, AlertCard },
+  components: { quizCard, AlertCard },
   data() {
     return {
       showQuiz: false,
@@ -32,7 +32,7 @@ export default {
       return this.$store.state.category.category
     },
     show() {
-      return this.$store.state.quizz.questions
+      return this.$store.state.quiz.questions
     },
   },
   async created() {
@@ -40,9 +40,9 @@ export default {
   },
   methods: {
     async getQuestions({ quiz }) {
-      await this.$store.commit('quizz/SET_QUIZZ', { ...quiz })
-      await this.$store.dispatch('quizz/getQuestions')
-      if (!this.$store.state.quizz.questions.length) {
+      await this.$store.commit('quiz/SET_QUIZ', { ...quiz })
+      await this.$store.dispatch('quiz/getQuestions')
+      if (!this.$store.state.quiz.questions.length) {
         this.alert = true
         this.hideAlert()
       }
