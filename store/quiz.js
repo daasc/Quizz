@@ -21,7 +21,7 @@ export const mutations = {
     state.questions = payload
   },
   SET_ANSWERS: (state, payload) => {
-    state.answers = payload
+    state.answers.push(payload)
   },
   NEXT: (state) => {
     state.questions.shift()

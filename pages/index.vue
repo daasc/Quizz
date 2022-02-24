@@ -11,15 +11,18 @@
       :category="category"
       @setQuiz="getQuestions"
     ></quiz-card>
+
+    <questions-card v-if="show.length"></questions-card>
   </div>
 </template>
 
 <script>
+import QuestionsCard from '../components/questionsCard.vue'
 import AlertCard from '@/components/alertCard.vue'
 import quizCard from '@/components/quizCard.vue'
 export default {
   name: 'IndexPage',
-  components: { quizCard, AlertCard },
+  components: { quizCard, AlertCard, QuestionsCard },
   data() {
     return {
       showQuiz: false,

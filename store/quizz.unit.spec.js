@@ -39,13 +39,12 @@ const getQuestions = () => {
 }
 
 const getAnswers = () => {
-  return [
-    {
-      question: 'What is the punishment for playing Postal 2 in New Zealand?',
-      answer: '10 years in prison and a fine of $50,000',
-    },
-  ]
+  return {
+    question: 'What is the punishment for playing Postal 2 in New Zealand?',
+    answer: '10 years in prison and a fine of $50,000',
+  }
 }
+
 axios.get = jest
   .fn()
   .mockImplementationOnce(() =>
@@ -110,7 +109,18 @@ describe('Quiz Store', () => {
   it('should return the first in the list ', async () => {
     const { store } = await createStore()
     await store.commit('SET_QUESTIONS', getQuestions())
-    expect(store.getters.question).toEqual(getQuestion())
+    expect(store.getters.question).toEqual({
+      category: 'Entertainment: Video Games',
+      type: 'multiple',
+      difficulty: 'medium',
+      question: 'What is the punishment for playing Postal 2 in New Zealand?',
+      correct_answer: '10 years in prison and a fine of $50,000',
+      incorrect_answers: [
+        'Fine of $5,000',
+        'Nothing',
+        '15 years in prison and a fine of $10,000',
+      ],
+    })
   })
   it('should add data in questions when SET_QUESTIONS is called', async () => {
     const { store } = createStore()
@@ -121,7 +131,7 @@ describe('Quiz Store', () => {
   it('should add data in answers when SET_ANSWERS is called', async () => {
     const { store } = createStore()
     await store.commit('SET_ANSWERS', getAnswers())
-    expect(store.state.answers).toEqual(getAnswers())
+    expect(store.state.answers).toEqual([getAnswers()])
   })
   it('should remove the first question from the list and save the rest when next is called', async () => {
     const { store } = createStore()

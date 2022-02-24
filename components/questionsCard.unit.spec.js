@@ -1,5 +1,10 @@
-import { mount } from '@vue/test-utils'
+import { mount, createLocalVue } from '@vue/test-utils'
+import Vuex from 'vuex'
+import Vue from 'vue'
+import { getters, mutations } from '@/store/quiz.js'
 import questionsCard from '@/components/questionsCard'
+const localVue = createLocalVue()
+localVue.use(Vuex)
 const getQuestion = () => {
   return [
     {
@@ -34,31 +39,41 @@ const getQuestions = () => {
   ]
 }
 describe('questionsCard', () => {
-  const mountQuestion = ({ questions = undefined }) => {
-    const wrapper = mount(questionsCard, {
-      propsData: {
-        questions,
+  let storeQuestions
+  beforeEach(() => {
+    storeQuestions = new Vuex.Store({
+      modules: {
+        quiz: {
+          state: {
+            questions: getQuestions(),
+            answers: [],
+          },
+          mutations,
+          getters,
+          namespaced: true,
+        },
       },
     })
+  })
+  const mountQuestion = async ({ store }) => {
+    const wrapper = mount(questionsCard, { mocks: { $store: store }, localVue })
+    await Vue.nextTick()
 
-    return { wrapper }
+    return { wrapper, store }
   }
   it('should mount the component', async () => {
-    const { wrapper } = await mountQuestion({ questions: getQuestion() })
+    const { wrapper } = await mountQuestion({ store: storeQuestions })
     expect(wrapper.vm).toBeDefined()
   })
-  it('should default props', async () => {
-    const { wrapper } = await mountQuestion({})
-    expect(wrapper.props().questions).toHaveLength(1)
-  })
+
   it('should show category question', async () => {
-    const { wrapper } = await mountQuestion({ questions: getQuestion() })
+    const { wrapper } = await mountQuestion({ store: storeQuestions })
     const titleCategory = await wrapper.find('[data-testid="title-category"]')
     expect(titleCategory.text()).toContain('Entertainment: Video Games')
   })
 
   it('should show description of the question', async () => {
-    const { wrapper } = await mountQuestion({ questions: getQuestion() })
+    const { wrapper } = await mountQuestion({ store: storeQuestions })
     const description = await wrapper.find(
       '[data-testid="description-question"]'
     )
@@ -68,28 +83,29 @@ describe('questionsCard', () => {
   })
 
   it('should show answer options', async () => {
-    const { wrapper } = await mountQuestion({ questions: getQuestion() })
+    const { wrapper } = await mountQuestion({ store: storeQuestions })
     const answers = await wrapper.find('[data-testid="answers"]').findAll('li')
     expect(answers).toHaveLength(4)
   })
 
   it('should have a next questions button', async () => {
-    const { wrapper } = await mountQuestion({ questions: getQuestions() })
+    const { wrapper } = await mountQuestion({ store: storeQuestions })
     const next = await wrapper.find('[data-testid="next-question"]')
     expect(next.text()).toContain('Next')
   })
 
   it('should have a stop questions button', async () => {
-    const { wrapper } = await mountQuestion({ questions: getQuestions() })
+    const { wrapper } = await mountQuestion({ store: storeQuestions })
     const stop = await wrapper.find('[data-testid="stop-question"]')
     expect(stop.text()).toContain('Stop')
   })
 
-  xit('should go to next question when next button is clicked', async () => {
-    const { wrapper } = await mountQuestion({ questions: getQuestions() })
+  it('should go to next question when next button is clicked', async () => {
+    const { wrapper, store } = await mountQuestion({ store: storeQuestions })
     const next = await wrapper.find('[data-testid="next-question"]')
     await next.trigger('click')
     const titleCategory = await wrapper.find('[data-testid="title-category"]')
     expect(titleCategory.text()).toContain('History')
+    expect(store.state.quiz.answers).toHaveLength(1)
   })
 })
