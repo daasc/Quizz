@@ -94,7 +94,10 @@ describe('Quiz Store', () => {
     const { store } = await createStore()
     expect(store.state.quiz).toEqual(getQuiz({}))
   })
-
+  it('should return the value of the quiz', async () => {
+    const { store } = await createStore()
+    expect(store.state.result).toEqual(0)
+  })
   it('should return the value of the questions', async () => {
     const { store } = await createStore()
     expect(store.state.questions).toEqual([])
@@ -106,18 +109,9 @@ describe('Quiz Store', () => {
   it('should return the first in the list ', async () => {
     const { store } = await createStore()
     await store.commit('SET_QUESTIONS', getQuestions())
-    expect(store.getters.question).toEqual({
-      category: 'Entertainment: Video Games',
-      type: 'multiple',
-      difficulty: 'medium',
-      question: 'What is the punishment for playing Postal 2 in New Zealand?',
-      correct_answer: '10 years in prison and a fine of $50,000',
-      incorrect_answers: [
-        'Fine of $5,000',
-        'Nothing',
-        '15 years in prison and a fine of $10,000',
-      ],
-    })
+    expect(store.getters.question.category).toEqual(
+      'Entertainment: Video Games'
+    )
   })
   it('should add data in questions when SET_QUESTIONS is called', async () => {
     const { store } = createStore()
@@ -147,7 +141,13 @@ describe('Quiz Store', () => {
       getQuiz({ number: 10, category: '9', difficulty: 'easy', type: 'multi' })
     )
   })
-
+  it('should return the result of the answers', async () => {
+    const { store } = createStore()
+    await store.commit('SET_QUESTIONS', [getQuestion()])
+    await store.commit('SET_ANSWERS', getAnswers())
+    await store.commit('NEXT')
+    expect(store.state.result).toBe('100.00')
+  })
   it('should return the questions when getQuestion is called', async () => {
     const { store } = createStore()
     await store.commit('SET_QUIZ', getQuiz({ number: 10 }))
