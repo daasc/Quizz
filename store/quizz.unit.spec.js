@@ -39,10 +39,7 @@ const getQuestions = () => {
 }
 
 const getAnswers = () => {
-  return {
-    question: 'What is the punishment for playing Postal 2 in New Zealand?',
-    answer: '10 years in prison and a fine of $50,000',
-  }
+  return [true]
 }
 
 axios.get = jest

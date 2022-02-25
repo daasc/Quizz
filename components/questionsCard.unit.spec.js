@@ -87,7 +87,13 @@ describe('questionsCard', () => {
     const answers = await wrapper.find('[data-testid="answers"]').findAll('li')
     expect(answers).toHaveLength(4)
   })
-
+  it('should show current issue number', async () => {
+    const { wrapper } = await mountQuestion({ store: storeQuestions })
+    const numberQuestions = await wrapper.find(
+      '[data-testid="number-question"]'
+    )
+    expect(numberQuestions.text()).toContain('Q1:')
+  })
   it('should have a next questions button', async () => {
     const { wrapper } = await mountQuestion({ store: storeQuestions })
     const next = await wrapper.find('[data-testid="next-question"]')
