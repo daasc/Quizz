@@ -8,6 +8,7 @@ export const state = () => ({
   },
   questions: [],
   answers: [],
+  result: 0,
 })
 
 export const mutations = {
@@ -21,9 +22,15 @@ export const mutations = {
     state.questions = payload
   },
   SET_ANSWERS: (state, payload) => {
-    state.answers = payload
+    state.answers.push(payload)
   },
   NEXT: (state) => {
+    if (state.questions.length === 1) {
+      const gotItRight = state.answers.filter(Boolean).length
+      state.result = Number((gotItRight / state.answers.length) * 100).toFixed(
+        2
+      )
+    }
     state.questions.shift()
   },
 }
@@ -44,6 +51,31 @@ export const actions = {
 
 export const getters = {
   question: (state) => {
-    return state.questions[0]
+    const obj = Object.assign({}, { ...state.questions[0] })
+    const question = JSON.parse(JSON.stringify(obj))
+    if (question.incorrect_answers) {
+      question.question = question.question
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'")
+        .replace(/&rsquo;/g, '’')
+      question.correct_answer = question.correct_answer
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'")
+        .replace(/&rsquo;/g, '’')
+
+      question.incorrect_answers.splice(
+        Math.random() * 4,
+        0,
+        question.correct_answer
+      )
+      for (let index = 0; index < question.incorrect_answers.length; index++) {
+        const answers = question.incorrect_answers[index]
+        question.incorrect_answers[index] = answers
+          .replace(/&quot;/g, '"')
+          .replace(/&#039;/g, "'")
+          .replace(/&rsquo;/g, '’')
+      }
+    }
+    return question
   },
 }

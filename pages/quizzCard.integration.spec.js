@@ -40,7 +40,6 @@ describe('Index', () => {
     data = {
       alert: jest.fn(),
     }
-    jest.useFakeTimers()
     storeMonudels = new Vuex.Store({
       modules: {
         quiz: {
