@@ -106,6 +106,12 @@ describe('Quiz Store', () => {
     const { store } = await createStore()
     expect(store.state.answers).toEqual([])
   })
+  it('should clean questions when CLEAN is called', async () => {
+    const { store } = await createStore()
+    await store.commit('SET_QUESTIONS', getQuestions())
+    await store.commit('CLEAN')
+    expect(store.state.questions).toEqual([])
+  })
   it('should return the first in the list ', async () => {
     const { store } = await createStore()
     await store.commit('SET_QUESTIONS', getQuestions())

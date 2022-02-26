@@ -24,6 +24,11 @@ export const mutations = {
   SET_ANSWERS: (state, payload) => {
     state.answers.push(payload)
   },
+  CLEAN: (state) => {
+    state.questions = []
+    state.result = 0
+    state.answers = []
+  },
   NEXT: (state) => {
     if (state.questions.length === 1) {
       const gotItRight = state.answers.filter(Boolean).length

@@ -114,6 +114,14 @@ describe('questionsCard', () => {
     expect(titleCategory.text()).toContain('History')
     expect(store.state.quiz.answers).toHaveLength(1)
   })
+  it('should go to home when stop button is clicked', async () => {
+    const { wrapper, store } = await mountQuestion({
+      getQuestions: getQuestions(),
+    })
+    const stop = await wrapper.find('[data-testid="stop-question"]')
+    await stop.trigger('click')
+    expect(store.state.quiz.questions).toHaveLength(0)
+  })
 
   it('should check if any answer was selected to go to the next question when the next button is clicked', async () => {
     const { wrapper } = await mountQuestion({ getQuestions: getQuestions() })
