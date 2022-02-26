@@ -1,7 +1,10 @@
 <template>
   <div class="card">
     <div class="card__content_show__result">
-      <h2 data-testid="result" class="result">{{ result }}</h2>
+      <div>
+        <h2 data-testid="result" class="result">{{ result }}</h2>
+        <div class="score">your score</div>
+      </div>
       <button data-testid="got-to-home" class="btn" @click="goHome()">
         Go to Home
       </button>
@@ -36,6 +39,11 @@ export default {
     .result {
       font-size: calc(2vw + 2vh + 7vmin);
       margin-top: 2rem;
+      text-align: center;
+      margin-bottom: 0px;
+    }
+    .score {
+      color: #888;
       text-align: center;
     }
   }

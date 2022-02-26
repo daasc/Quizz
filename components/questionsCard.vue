@@ -107,8 +107,6 @@ export default {
         color: #bbb;
         font-weight: bold;
       }
-      .question {
-      }
     }
     .answers {
       text-decoration: none;
