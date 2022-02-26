@@ -31,7 +31,11 @@
       </ul>
     </div>
     <div class="group-button">
-      <button data-testid="stop-question" class="button-19 color-button-stop">
+      <button
+        data-testid="stop-question"
+        class="button-19 color-button-stop"
+        @click="goHome()"
+      >
         Stop
       </button>
       <button
@@ -65,6 +69,7 @@ export default {
         this.numberQuestion++
         this.$store.commit('quiz/SET_ANSWERS', this.checkAnswers())
         this.$store.commit('quiz/NEXT')
+        this.selected = null
       }
     },
     checkAnswers() {
@@ -78,6 +83,9 @@ export default {
         return false
       }
       return true
+    },
+    goHome() {
+      this.$store.commit('quiz/CLEAN')
     },
   },
 }
@@ -98,8 +106,6 @@ export default {
       .number-question {
         color: #bbb;
         font-weight: bold;
-      }
-      .question {
       }
     }
     .answers {

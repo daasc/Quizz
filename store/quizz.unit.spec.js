@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import axios from 'axios'
@@ -105,6 +106,12 @@ describe('Quiz Store', () => {
   it('should return the value of the answers', async () => {
     const { store } = await createStore()
     expect(store.state.answers).toEqual([])
+  })
+  it('should clean questions when CLEAN is called', async () => {
+    const { store } = await createStore()
+    await store.commit('SET_QUESTIONS', getQuestions())
+    await store.commit('CLEAN')
+    expect(store.state.questions).toEqual([])
   })
   it('should return the first in the list ', async () => {
     const { store } = await createStore()

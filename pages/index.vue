@@ -7,12 +7,14 @@
       :msg="msg"
     ></alert-card>
     <quiz-card
-      v-if="!show.length"
+      v-if="!show.length && !result.length"
       :category="category"
       @setQuiz="getQuestions"
     ></quiz-card>
 
     <questions-card v-if="show.length"></questions-card>
+
+    <show-result v-if="result.length"></show-result>
   </div>
 </template>
 
@@ -20,9 +22,10 @@
 import QuestionsCard from '../components/questionsCard.vue'
 import AlertCard from '@/components/alertCard.vue'
 import quizCard from '@/components/quizCard.vue'
+import ShowResult from '@/components/showResult.vue'
 export default {
   name: 'IndexPage',
-  components: { quizCard, AlertCard, QuestionsCard },
+  components: { quizCard, AlertCard, QuestionsCard, ShowResult },
   data() {
     return {
       showQuiz: false,
@@ -36,6 +39,9 @@ export default {
     },
     show() {
       return this.$store.state.quiz.questions
+    },
+    result() {
+      return this.$store.state.quiz.result
     },
   },
   async created() {
