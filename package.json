@@ -14,7 +14,8 @@
     "prepare": "husky install",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "deploy": "gh-pages -d dist --dotfiles"
   },
   "lint-staged": {
     "*.{js,vue}": "eslint --cache",
@@ -41,6 +42,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-nuxt": "^3.1.0",
     "eslint-plugin-vue": "^8.2.0",
+    "gh-pages": "^3.2.3",
     "husky": "^7.0.4",
     "jest": "^27.4.4",
     "lint-staged": "^12.1.2",
