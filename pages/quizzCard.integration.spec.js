@@ -31,7 +31,6 @@ const getQuestion = () => {
 }
 
 describe('Index', () => {
-  let storeMonudels
   afterEach(() => {
     jest.clearAllMocks()
     jest.clearAllTimers()
@@ -40,7 +39,9 @@ describe('Index', () => {
     data = {
       alert: jest.fn(),
     }
-    storeMonudels = new Vuex.Store({
+  })
+  const createMount = async ({ getError = false }) => {
+    const store = new Vuex.Store({
       modules: {
         quiz: {
           actions: quiz.actions,
@@ -58,8 +59,6 @@ describe('Index', () => {
         },
       },
     })
-  })
-  const createMount = async ({ getError = false, store }) => {
     const commit = jest.fn()
     if (getError) {
       axios.get.mockReturnValue(
@@ -100,20 +99,17 @@ describe('Index', () => {
   }
 
   it('should mount the component', async () => {
-    const { wrapper } = await createMount({ store: storeMonudels })
+    const { wrapper } = await createMount({})
     expect(wrapper.vm).toBeDefined()
   })
   it('should mount the quizCard component  as a child', async () => {
-    const { wrapper } = await createMount({ store: storeMonudels })
+    const { wrapper } = await createMount({})
     const card = wrapper.findAllComponents(quizCard)
     expect(card).toHaveLength(1)
   })
 
   it('should call getCategory on component mount', async () => {
-    const { commit } = await createMount({
-      categorys: true,
-      store: storeMonudels,
-    })
+    const { commit } = await createMount({ categorys: true })
     expect(commit).toHaveBeenCalledWith('SET_CATEGORY', [
       { id: 2, name: 'paulo' },
     ])
@@ -122,25 +118,19 @@ describe('Index', () => {
     )
   })
   it('should call getQuizz and save the questions when setQuizz is clicked ', async () => {
-    const { wrapper } = await createMount({ store: storeMonudels })
-
+    const { wrapper } = await createMount({})
     await wrapper
       .find('[data-testid="input-amount"]')
       .findAll('option')
       .at(1)
       .setSelected()
-
     await wrapper.find('form').trigger('submit')
     await Vue.nextTick()
     expect(wrapper.find('form').exists()).toBe(false)
   })
 
   it('should show an alert when no question is returned when setQuizz is clicked', async () => {
-    const { wrapper, store } = await createMount({
-      store: storeMonudels,
-      getError: true,
-    })
-
+    const { wrapper, store } = await createMount({ getError: true })
     await wrapper
       .find('[data-testid="input-difficulty"]')
       .findAll('option')

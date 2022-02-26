@@ -6,34 +6,44 @@ import { getters, mutations } from '@/store/quiz.js'
 import questionsCard from '@/components/questionsCard'
 const localVue = createLocalVue()
 localVue.use(Vuex)
-const getQuestion = () => {
+const checkAnswers = ({ type = null }) => {
+  if (type === null) {
+    return [
+      'Fine of $5,000',
+      'Nothing',
+      '15 years in prison and a fine of $10,000',
+    ]
+  }
+  if (type) {
+    return ['Leif Erikson', 'Leif Erikson', 'Leif Erikson']
+  } else {
+    return ['Leif Erikso', 'Leif Eriksn', 'Leif Erikn', 'jjj', 'dadsda']
+  }
+}
+const getQuestion = ({
+  answers = '10 years in prison and a fine of $50,000',
+  type = null,
+}) => {
   return [
     {
       category: 'Entertainment: Video Games',
       type: 'multiple',
       difficulty: 'medium',
       question: 'What is the punishment for playing Postal 2 in New Zealand?',
-      correct_answer: '10 years in prison and a fine of $50,000',
-      incorrect_answers: [
-        'Fine of $5,000',
-        'Nothing',
-        '15 years in prison and a fine of $10,000',
-      ],
+      correct_answer: answers,
+      incorrect_answers: checkAnswers({ type }),
     },
   ]
 }
+
 const getQuestions = () => {
   return [
-    ...getQuestion(),
+    ...getQuestion({}),
     {
       category: 'History',
       correct_answer: 'Leif Erikson',
       difficulty: 'medium',
-      incorrect_answers: [
-        'Christopher Columbus',
-        'Amerigo Vespucci',
-        'Ferdinand Magellan',
-      ],
+      incorrect_answers: checkAnswers({}),
       question: 'Who was the first explorer to sail to North America?',
       type: 'multiple',
     },
@@ -133,16 +143,7 @@ describe('questionsCard', () => {
   })
   it('should check the answer and check if it was marked correctly true test case', async () => {
     const { wrapper, store } = await mountQuestion({
-      getQuestions: [
-        {
-          category: 'History',
-          correct_answer: 'Leif Erikson',
-          difficulty: 'medium',
-          incorrect_answers: ['Leif Erikson', 'Leif Erikson', 'Leif Erikson'],
-          question: 'Who was the first explorer to sail to North America?',
-          type: 'multiple',
-        },
-      ],
+      getQuestions: getQuestion({ answers: 'Leif Erikson', type: true }),
     })
     const next = await wrapper.find('[data-testid="next-question"]')
     const radioInput = wrapper.findAll('input[type="radio"]')
@@ -153,22 +154,7 @@ describe('questionsCard', () => {
   })
   it('should check the answer and check if it was marked correctly false test case', async () => {
     const { wrapper, store } = await mountQuestion({
-      getQuestions: [
-        {
-          category: 'History',
-          correct_answer: 'Leif rikson',
-          difficulty: 'medium',
-          incorrect_answers: [
-            'Leif Erikso',
-            'Leif Eriksn',
-            'Leif Erikn',
-            'jjj',
-            'dadsda',
-          ],
-          question: 'Who was the first explorer to sail to North America?',
-          type: 'multiple',
-        },
-      ],
+      getQuestions: getQuestion({ answers: 'Leif Erikson', type: false }),
     })
     const next = await wrapper.find('[data-testid="next-question"]')
     const radioInput = wrapper.findAll('input[type="radio"]')
